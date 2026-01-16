@@ -22,6 +22,8 @@ services:
       - ./mosquitto/logs:/mosquitto/log
       - ./mosquitto/config:/mosquitto/config
     user: "1883:1883"
+    networks:
+      - manoir_internal
 
   homeassistant:
     container_name: homeassistant
@@ -31,4 +33,17 @@ services:
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     privileged: true
-    network_mode: host
+    ports:
+      - "8123:8123"
+    networks:
+      - manoir_internal
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    external: true
+
+  manoir_internal:
+    name: manoir_internal
+    driver: bridge
